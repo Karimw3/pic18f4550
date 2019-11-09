@@ -2,29 +2,6 @@
 #include <xc.h>
 
 
-void display_7seg_int(int adc){
-    
-    if(adc<0x01)
-        LATB = 0b0111111;
-        
-    if((adc>=0x01)&&(adc<0x02))
-        LATB = 0b000110;
-        
-    if((adc>=0x02)&&(adc<0x03))
-        LATB = 0b1011011;
-        
-    if((adc>=0x03)&&(adc<0x04))
-        LATB = 0b1001111;
-        
-    if((adc>=0x04)&&(adc<0x05))
-        LATB = 0x66;
-        
-    if((adc>=5))
-        LATB = 0x6D;
-    
-    return;
-}
-
 
 int adc_Read(){
     int adc=0;
@@ -32,11 +9,10 @@ int adc_Read(){
     ADCON0bits.GO_DONE = 1;      //A/D Conversion Status Bit
     // 1 = A/D conversion in progress
     // 0 = A/D Idle
-    while (ADCON0bits.GO_DONE);       //waititng until convertion finish
+    while (ADCON0bits.GO_DONE){};       //waititng until convertion finish
         adc = ADRESH;                 //more significative bits
         adc = adc<<8;                 //8 bit sweep
         adc = adc + ADRESL;           //ADRESL saved
-        adc = (int)((adc*5)/(1023));  //casting varible
         return adc;
 }
 
@@ -92,8 +68,10 @@ void clock_Init(){
 
 
 void port_Init(){
-    TRISC = 0x00;  //salida
-    TRISB = 0x00;  //salida
+    TRISC = 0x00;  //output
+    TRISB = 0x00;  //output
+    TRISD = 0x00;  //output
+    
     LATC =  0x00;   //mandamos cero a puerto c
     LATB =  0x00;   //mandamos cero a puerto b
     return;
